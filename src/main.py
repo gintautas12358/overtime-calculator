@@ -30,7 +30,7 @@ def main(file_path: str) -> None:
     overtime = timedelta(seconds=int(total_duration - required_duration))
     hours, minutes = hours_minutes(overtime)
     if total_duration > required_duration:
-        print(f"Overtime: {hours}:{minutes}:00")  #
+        print(f"Overtime: {hours}:{minutes}:00")
         print(f"Eligible free days: {hours // working_day_duration_h}")
         print(
             f"Eligible not full day: {hours - working_day_duration_h*(hours // working_day_duration_h)}:{minutes}:00"
