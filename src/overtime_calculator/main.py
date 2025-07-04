@@ -8,7 +8,7 @@ def hours_minutes(td: timedelta) -> tuple[int, int]:
     return td.days * 24 + td.seconds // 3600, (td.seconds // 60) % 60
 
 
-def main(file_path: str) -> None:
+def estimate(file_path: str) -> None:
     """
     Calculate overtime or undertime based on work hours.
     """
@@ -40,7 +40,7 @@ def main(file_path: str) -> None:
         print(f"Undertime: {hours}:{minutes}:00")
 
 
-if __name__ == "__main__":
+def main():
     parser = ArgumentParser(
         description="Calculate overtime or undertime based on work hours."
     )
@@ -54,4 +54,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     file_path = Path(args.file).expanduser().resolve()
-    main(file_path)
+    estimate(file_path)
+
+
+if __name__ == "__main__":
+    main()
