@@ -13,23 +13,29 @@ BREAK_TIME_MIN = 30
 BREAK_TIME_SECONDS = BREAK_TIME_MIN * MIN_TO_SECONDS
 
 
-def get_data(file_path: Path, config: dict) -> tuple[int, int]:
+def get_data(file_path: Path) -> dict:
     """
     Extracts required and total work hours from a CSV file.
     """
     df = pd.read_csv(file_path)
     df = df.reset_index()  # make sure indexes pair with number of rows
 
-    day_dict = {}
+    data = {}
     for _, row in df.iterrows():
-        day_dict[row["Date"]] = day_dict.get(row["Date"], 0) + row["Duration"]
+        data[row["Date"]] = data.get(row["Date"], 0) + row["Duration"]
 
+    return data
+
+
+def data_to_time(day_dict: dict, config: dict) -> tuple[int, int]:
+    """
+    Convert 'Duration' column in DataFrame to time format.
+    """
     size = len(day_dict)
     total_duration = sum(day_dict.values()) - size * (
         config.get("remove_breaks") * BREAK_TIME_SECONDS
     )
     required_duration = WORKING_DAY_DURATION_S * size
-
     return required_duration, total_duration
 
 
@@ -50,7 +56,8 @@ def estimate(file_path: str, config: dict) -> None:
     Calculate overtime or undertime based on work hours.
     """
 
-    required_duration, total_duration = get_data(file_path, config)
+    data = get_data(file_path)
+    required_duration, total_duration = data_to_time(data, config)
 
     hours, minutes = calc_overtime(required_duration, total_duration)
     if total_duration > required_duration:
